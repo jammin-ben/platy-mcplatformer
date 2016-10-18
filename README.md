@@ -1,5 +1,4 @@
 #platy-mcplatformer
-Our platformer!!!
+Our platformer!
 
-A group of friends making a game, that will hopefully be fun.
-If not, at least we learned something. Hopefully.
+A group of friends making a game, that will hopefully be fun. And if not fun,hopefully we learned something
