@@ -14,15 +14,24 @@ myState.preload = function () {
 
 //create
 myState.create = function () {
+Kiwi.State.prototype.create.call( this );
     this.rect = new Player(this, 300, 400);
     this.rect2 = new Player(this, 400, 400);
     
     this.ground = new Platform(this, 0, 500);
     
+
+
+//keys    
     this.leftKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.A);
     this.rightKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.D);
     this.downKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.S);
     this.upKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.W);
+    this.jumpKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.SPACEBAR);
+    
+    this.jumpKey = 
+    
+    
     this.addChild(this.rect);
     this.addChild(this.rect2);
     this.addChild(this.ground);
@@ -35,6 +44,7 @@ myState.collideFunc = function() {
 };
 
 myState.update = function () {
+Kiwi.State.prototype.update.call( this );
 
     var colliding = Kiwi.Components.ArcadePhysics.collide(this.rect, this.rect2, false);
     console.log(colliding);
@@ -52,15 +62,22 @@ myState.update = function () {
     else if (this.downKey.isDown) {
         this.rect.transform.y += 5;
     }
-    //this.rect.physics.velocity.y -= 95;
-    console.log(this.rect.physics.velocity.y);
+    else if (this.jumpKey.isDown) {
+        this.rect.y -= 50;
+    }
+    this.checkPlayerHittingGround();
+}
+
+myState.checkPlayerHittingGround = function() {
+    if (this.rect.physics.overlaps(this.ground, true));
 }
 // player class
 var Player = function(state, x, y) {
     Kiwi.GameObjects.Sprite.call(this, state, state.textures.rectangle, x, y, true);
     this.physics = this.components.add(new Kiwi.Components.ArcadePhysics(this, this.box));
-    this.physics.velocity.y = 77;
+    this.physics.velocity.y = 50;
     this.physics.acceleration.y = 144;
+    this.physics.maxVelocity.y = 90;
 };
 Kiwi.extend(Player, Kiwi.GameObjects.Sprite);
 
