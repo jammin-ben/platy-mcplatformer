@@ -17,8 +17,11 @@ myState.create = function () {
 Kiwi.State.prototype.create.call( this );
     this.rect = new Player(this, 300, 400);
     this.rect2 = new Player(this, 400, 400);
+    this.rect2.physics.immovable = false;
     
     this.ground = new Platform(this, 0, 500);
+    
+    this.platform1 = new Platform(this, 400, 300);
     
 
 
@@ -29,12 +32,11 @@ Kiwi.State.prototype.create.call( this );
     this.upKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.W);
     this.jumpKey = this.game.input.keyboard.addKey(Kiwi.Input.Keycodes.SPACEBAR);
     
-    this.jumpKey = 
-    
     
     this.addChild(this.rect);
     this.addChild(this.rect2);
     this.addChild(this.ground);
+    this.addChild(this.platform1);
 };
 
 myState.collideFunc = function() {
@@ -46,11 +48,9 @@ myState.collideFunc = function() {
 myState.update = function () {
 Kiwi.State.prototype.update.call( this );
 
-    var colliding = Kiwi.Components.ArcadePhysics.collide(this.rect, this.rect2, false);
-    console.log(colliding);
 
 // controller
-    if (this.rightKey.isDown && !colliding){
+    if (this.rightKey.isDown){
         this.rect.transform.x += 5;
     }
     else if (this.leftKey.isDown) {
@@ -63,13 +63,16 @@ Kiwi.State.prototype.update.call( this );
         this.rect.transform.y += 5;
     }
     else if (this.jumpKey.isDown) {
-        this.rect.y -= 50;
+        this.rect.y -= 15;
     }
-    this.checkPlayerHittingGround();
+    this.checkPlayerHitting();
 }
 
-myState.checkPlayerHittingGround = function() {
-    if (this.rect.physics.overlaps(this.ground, true));
+myState.checkPlayerHitting = function() {
+    Kiwi.Components.ArcadePhysics.collide(this.rect, this.rect2, true);
+    this.rect.physics.overlaps(this.platform1, true);
+    this.rect.physics.overlaps(this.ground, true);
+    this.rect2.physics.overlaps(this.ground, true);
 }
 // player class
 var Player = function(state, x, y) {
