@@ -41,32 +41,30 @@ Kiwi.State.prototype.create.call( this );
 
 myState.collideFunc = function() {
     this.collide = Kiwi.Components.ArcadePhysics.collide(this.rect, this.rect2, false);
-    //console.log(this.collide);
     
 };
 
 myState.update = function () {
 Kiwi.State.prototype.update.call( this );
-
-
 // controller
     if (this.rightKey.isDown){
-        this.rect.transform.x += 5;
+        this.rect.transform.x += this.rect.moveSpeed * myGame.time.delta();
     }
     else if (this.leftKey.isDown) {
-        this.rect.transform.x -= 5;
+        this.rect.transform.x -= this.rect.moveSpeed * myGame.time.delta();
     }
     else if (this.upKey.isDown) {
-        this.rect.transform.y -= 5;
+        this.rect.transform.y -= this.rect.moveSpeed * myGame.time.delta();
     }
     else if (this.downKey.isDown) {
-        this.rect.transform.y += 5;
+        this.rect.transform.y += this.rect.moveSpeed * myGame.time.delta();
     }
     else if (this.jumpKey.isDown) {
-        this.rect.y -= 15;
+        this.rect.y -= (this.rect.moveSpeed * 2) * myGame.time.delta();
     }
     this.checkPlayerHitting();
-}
+    this.updateCameraPosition();
+} // end update
 
 myState.checkPlayerHitting = function() {
     Kiwi.Components.ArcadePhysics.collide(this.rect, this.rect2, true);
@@ -74,13 +72,21 @@ myState.checkPlayerHitting = function() {
     this.rect.physics.overlaps(this.ground, true);
     this.rect2.physics.overlaps(this.ground, true);
 }
+
+//update Camera Position
+myState.updateCameraPosition = function() {
+    this.game.cameras.defaultCamera.transform.x = -1 * this.rect.x + this.game.stage.width * this.rect.offSet.x;
+	this.game.cameras.defaultCamera.transform.y = -1 * this.rect.y + this.game.stage.height * this.rect.offSet.y;
+}
 // player class
 var Player = function(state, x, y) {
     Kiwi.GameObjects.Sprite.call(this, state, state.textures.rectangle, x, y, true);
     this.physics = this.components.add(new Kiwi.Components.ArcadePhysics(this, this.box));
-    this.physics.velocity.y = 50;
-    this.physics.acceleration.y = 144;
+    this.physics.velocity.y = 40;
+    this.physics.acceleration.y = 15;
     this.physics.maxVelocity.y = 90;
+    this.moveSpeed = .3;
+    this.offSet = new Kiwi.Geom.Point(0.5, 0.5);
 };
 Kiwi.extend(Player, Kiwi.GameObjects.Sprite);
 
